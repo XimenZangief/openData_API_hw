@@ -78,6 +78,11 @@
                 // console.log(res);
                 data = res;
                 for (i = 1; i <= 10; i++) {
+                    if (data[i].register.length > 5) {
+                        str = data[i].register.substr(0, 4) + "...";
+                    } else {
+                        str = data[i].register;
+                    }
                     $('tbody').append(`
                         <tr>
                             <td>${i}</td>
