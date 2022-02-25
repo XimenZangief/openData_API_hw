@@ -74,8 +74,25 @@
             type: "get",
             dataType: "json",
             success: function (res) {
-                $('h1').html('抓到資料囉!');
-                console.log(res);
+                // $('h1').html('抓到資料囉!');
+                // console.log(res);
+                data = res;
+                for (i = 1; i <= 10; i++) {
+                    $('tbody').append(`
+                        <tr>
+                            <td>${i}</td>
+                            <td>
+                                <a href="${data[i].imageUrl}" target="_blank">
+                                    ${data[i].placeName}
+                                </a>                            
+                            </td>
+                            <td>${data[i].address}</td>
+                            <td>${data[i].managerUnit}</td>
+                            <td>${data[i].register}</td>
+                        </tr>
+                        `);
+                }
+                $('#myTable').DataTable();
             },
             error: function (xhr) {
                 $('h1').html('發生錯誤' + xhr.status + xhr.statusText);
