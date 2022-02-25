@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+    </head>
+
+<body>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-12">
+                <h1>36小時天氣預報</h1>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-hover mt-3" id="myTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>縣市</th>
+                <th>0600~1800溫度</th>
+                <th>1800~明天0600溫度</th>
+                <th>明天0600溫度~明天1800溫度</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+
+
+    <!-- 先載入 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+        integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+        crossorigin="anonymous"></script>
+    <!-- 先載入 END-->
+
+    <!-- datatableJS 和 資料JS -->
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=CWB-3CD87629-92E0-4E2A-B534-40173DDC273A&downloadType=WEB&format=JSON",
+                // url: "F-C0032-001.json",
+                type: "get",
+                dataType: "json",
+                success: function (result) {
+                    data = result.cwbopendata.dataset.location;
+                    console.log(data);
+
+                    const hourArr = [];
+                    hourArr[0] = "凌晨";
+                    hourArr[6] = "白天";
+                    hourArr[12] = "下午";
+                    hourArr[18] = "晚上";
+                    console.log(hourArr);
+
+                    // 取得時間資料，Thu Feb 10 2022 06:00:00 GMT+0800 (台北標準時間)
+                    const time0 = new Date(data[0].weatherElement[0].time[0].startTime);
+                    const time1 = new Date(data[0].weatherElement[0].time[1].startTime);
+                    const time2 = new Date(data[0].weatherElement[0].time[2].startTime);
+                    console.log(time0);
+
+                    // getFullYear()取得西元年
+                    // getMonth()取得月份會是0~11月，故+1
+                    // getDate()取得日期！getDay()是取得星期幾，會搞混！
+                    // getHours取得小時並塞入hourArr[]並轉成凌晨/白天/下午/晚上
+                    timeText0 = `${time0.getFullYear()} / ${time0.getMonth() + 1} / ${time0.getDate()} - ${hourArr[time0.getHours()]}`;
+                    timeText1 = `${time1.getFullYear()} / ${time1.getMonth() + 1} / ${time1.getDate()} - ${hourArr[time1.getHours()]}`;
+                    timeText2 = `${time2.getFullYear()} / ${time2.getMonth() + 1} / ${time2.getDate()} - ${hourArr[time2.getHours()]}`;
+                    console.log(timeText0);
+                    console.log(timeText1);
+                    console.log(timeText2);
+
+                    // 將表格列的後三欄標題作替換
+                    $('tr>th').eq(2).text(timeText0);
+                    $('tr>th').eq(3).text(timeText1);
+                    $('tr>th').eq(4).text(timeText2);
+
+                    const iconText0 = (time0.getHours() == 6 || time0.getHours() == 12) ? "day" : "night";
+                    const iconText1 = (time1.getHours() == 6 || time1.getHours() == 12) ? "day" : "night";
+                    const iconText2 = (time2.getHours() == 6 || time2.getHours() == 12) ? "day" : "night";
+                    console.log(iconText0);
+                    console.log(iconText1);
+                    console.log(iconText2);
+
+                    // 用for迴圈繞出資料
+                    // &deg;C是°C
+                    for (let i = 0; i < data.length; i++) {
+                        $('tbody').append(`
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data[i].locationName}</td>
+                            <td>
+                                ${data[i].weatherElement[0].time[0].parameter.parameterName}
+                                ${data[i].weatherElement[2].time[0].parameter.parameterName} -
+                                ${data[i].weatherElement[1].time[0].parameter.parameterName}
+                                &deg;C
+                                <img src="./img/${iconText0}/${data[i].weatherElement[0].time[0].parameter.parameterValue}.svg" width="50px">
+                            </td>
+                            <td>
+                                ${data[i].weatherElement[0].time[1].parameter.parameterName}
+                                ${data[i].weatherElement[2].time[1].parameter.parameterName} -
+                                ${data[i].weatherElement[1].time[1].parameter.parameterName}
+                                &deg;C
+                                <img src="./img/${iconText1}/${data[i].weatherElement[0].time[1].parameter.parameterValue}.svg" width="50px">
+                            </td>
+                            <td>
+                                ${data[i].weatherElement[0].time[2].parameter.parameterName}
+                                ${data[i].weatherElement[2].time[2].parameter.parameterName} -
+                                ${data[i].weatherElement[1].time[2].parameter.parameterName}
+                                &deg;C
+                                <img src="./img/${iconText2}/${data[i].weatherElement[0].time[2].parameter.parameterValue}.svg" width="50px">
+                            </td>
+                        </tr>
+                        `);
+                    }
+                    // ˊ_>ˋ...要變成dataTable就醬
+                    // table內必須存在thead和tbody
+                    $('#myTable').DataTable();
+                }
+            });
+
+        });
+    </script>
+
+
+</body>
+
+</html>
