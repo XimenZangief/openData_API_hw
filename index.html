@@ -1,51 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>街頭藝人展演空間資訊 </title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
-        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>街頭藝人展演空間資訊</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css"
+    />
 
     <style>
-        footer a:hover {
-            text-decoration: none;
-            color: yellow;
-        }
+      footer a:hover {
+        text-decoration: none;
+        color: yellow;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div class="container-fluid text-center ">
-        <div class="row">
-            <div class="col-12">
-                <h1>街頭藝人展演空間資訊</h1>
-            </div>
+  <body>
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-12">
+          <h1>街頭藝人展演空間資訊</h1>
         </div>
-        <table class="table table-striped table-hover mt-3" id="myTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>地點名稱</th>
-                    <th>地址</th>
-                    <th>管理單位</th>
-                    <th>圖片URL</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <footer class="fixed-bottom bg-dark text-white text-center" style="height:5%">
-            友善引用來源
-            <a href="https://opendata.culture.tw/frontsite" target="_blank">
-                文化部-文化資料開放服務網 <span><img src="logo.jpg" width="10%"></span>
-            </a>
-        </footer>
+      </div>
+      <table class="table table-striped table-hover mt-3" id="myTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>地點名稱</th>
+            <th>地址</th>
+            <th>管理單位</th>
+            <th>預約方式</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <footer
+        class="fixed-bottom bg-dark text-white text-center"
+        style="height: 5%"
+      >
+        友善引用來源
+        <a href="https://opendata.culture.tw/frontsite" target="_blank">
+          文化部-文化資料開放服務網
+          <span><img src="logo.jpg" width="10%" /></span>
+        </a>
+      </footer>
     </div>
-
 
     <!-- 
         JQuery
@@ -55,55 +64,64 @@
     -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
-        integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
-        crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+      integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 
     <!-- 資料JS -->
-
-
-</body>
-<script>
+  </body>
+  <script>
     $(document).ready(function () {
-        $.ajax({
-            url: "https://cloud.culture.tw/frontsite/trans/SearchPerformPlaceAction.do?method=doFindPerformPlaceTypeJ",
-            type: "get",
-            dataType: "json",
-            success: function (res) {
-                // $('h1').html('抓到資料囉!');
-                // console.log(res);
-                data = res;
-                for (i = 1; i <= 10; i++) {
-                    if (data[i].register.length > 5) {
-                        str = data[i].register.substr(0, 4) + "...";
-                    } else {
-                        str = data[i].register;
-                    }
-                    $('tbody').append(`
+      $.ajax({
+        url: "https://cloud.culture.tw/frontsite/trans/SearchPerformPlaceAction.do?method=doFindPerformPlaceTypeJ",
+        type: "get",
+        dataType: "json",
+        success: function (res) {
+          // $('h1').html('抓到資料囉!');
+          // console.log(res);
+          data = res;
+          for (i = 0; i <= 10; i++) {
+            if (data[i].register.length > 5) {
+              str = data[i].register.substr(0, 4) + "...";
+            } else {
+              str = data[i].register;
+            }
+            $("tbody").append(`
                         <tr>
-                            <td>${i}</td>
+                            <td>${i + 1}</td>
                             <td>
                                 <a href="${data[i].imageUrl}" target="_blank">
                                     ${data[i].placeName}
                                 </a>                            
                             </td>
                             <td>${data[i].address}</td>
-                            <td>${data[i].managerUnit}</td>
-                            <td>${data[i].register}</td>
+                            <td class="hover">${data[i].managerUnit}</td>
+                            <td class="switch">
+                                <div class="short">${str}</div>
+                                <div class="full" style="display:none">${
+                                  data[i].register
+                                }</div>
+                            </td>
                         </tr>
                         `);
-                }
-                $('#myTable').DataTable();
-            },
-            error: function (xhr) {
-                $('h1').html('發生錯誤' + xhr.status + xhr.statusText);
-            }
-        })
-    })
-</script>
-
+          }
+          $("#myTable").DataTable();
+          $(".switch").on("click", function () {
+            $(this).parent().find(".short,.full").toggle();
+          });
+        },
+        error: function (xhr) {
+          $("h1").html("發生錯誤" + xhr.status + xhr.statusText);
+        },
+      });
+    });
+  </script>
 </html>
