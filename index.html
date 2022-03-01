@@ -12,7 +12,7 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css" />
 </head>
 
-<body>
+<body style="background-color: lightcyan; opacity: 0.7;">
   <div class="container-fluid text-center">
     <div class="row">
       <div class="col-12">
@@ -25,13 +25,13 @@
           <th>ID</th>
           <th>地點名稱</th>
           <th>地址</th>
-          <th>管理單位</th>
+          <th>管理單位(點擊顯示電話)</th>
           <th>預約方式</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-    <footer class="fixed-bottom bg-dark text-white text-center" style="height: 5%">
+    <footer class="bottom bg-dark text-white text-center" style="height: 5%">
       友善引用來源
       <a href="https://opendata.culture.tw/frontsite" target="_blank" style="text-decoration: none; color: yellow;">
         文化部-文化資料開放服務網
@@ -39,6 +39,7 @@
       </a>
     </footer>
   </div>
+
 
   <!-- 
         JQuery
@@ -70,6 +71,9 @@
             str = data[i].register.substr(0, 4) + "...";
           } else {
             str = data[i].register;
+          }
+          if (data[i].officePhone == "") {
+            data[i].officePhone = "無提供";
           }
           $("tbody").append(`
                         <tr>
