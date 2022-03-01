@@ -22,16 +22,18 @@
     <table class="table table-striped table-hover mt-3" id="myTable">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>地點名稱</th>
-          <th>地址</th>
-          <th>管理單位(點擊顯示電話)</th>
-          <th>預約方式</th>
+          <th width="5%">ID</th>
+          <th width="25%">地點名稱</th>
+          <th width="35%">地址</th>
+          <th width="20%">管理單位(點擊顯示電話)</th>
+          <th width="10%">預約方式</th>
         </tr>
       </thead>
-      <tbody></tbody>
+      <tbody>
+      </tbody>
     </table>
-    <footer class="bottom bg-dark text-white text-center" style="height: 5%">
+    <div class="spinner-border" role="status"></div>
+    <footer class="bottom bg-dark text-white text-center mt-3" style="height: 5%">
       友善引用來源
       <a href="https://opendata.culture.tw/frontsite" target="_blank" style="text-decoration: none; color: yellow;">
         文化部-文化資料開放服務網
@@ -65,8 +67,9 @@
       success: function (res) {
         // $('h1').html('抓到資料囉!');
         // console.log(res);
+        $(".spinner-border").removeClass("spinner-border");
         data = res;
-        for (i = 0; i <= 10; i++) {
+        for (i = 0; i < data.length; i++) {
           if (data[i].register.length > 5) {
             str = data[i].register.substr(0, 4) + "...";
           } else {
@@ -101,7 +104,7 @@
                         </tr>
                         `);
         }
-        $("#myTable").DataTable();
+        $("#myTable").DataTable().search('臺北').draw();
         $(".switch").on("click", function () {
           $(this).parent().find(".short,.full").toggle();
         });
