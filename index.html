@@ -87,6 +87,9 @@
           if (data[i].officePhone == "") {
             data[i].officePhone = "無提供";
           }
+          if (data[i].address == "") {
+            data[i].address = "無提供";
+          }
           $("tbody").append(`
                         <tr>
                             <td>${i + 1}</td>
